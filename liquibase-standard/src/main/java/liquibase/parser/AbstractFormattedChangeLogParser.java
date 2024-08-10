@@ -1,5 +1,6 @@
 package liquibase.parser;
 
+import io.github.pixee.security.BoundedLineReader;
 import liquibase.Labels;
 import liquibase.Scope;
 import liquibase.change.AbstractSQLChange;
@@ -236,10 +237,10 @@ public abstract class AbstractFormattedChangeLogParser implements ChangeLogParse
                 }
                 reader = new BufferedReader(StreamUtil.readStreamWithReader(fileStream, null));
 
-                String firstLine = reader.readLine();
+                String firstLine = BoundedLineReader.readLine(reader, 5_000_000);
 
                 while (firstLine != null && firstLine.trim().isEmpty() && reader.ready()) {
-                    firstLine = reader.readLine();
+                    firstLine = BoundedLineReader.readLine(reader, 5_000_000);
                 }
 
                 //
@@ -293,7 +294,7 @@ public abstract class AbstractFormattedChangeLogParser implements ChangeLogParse
 
             int count = 0;
             String line;
-            while ((line = reader.readLine()) != null) {
+            while ((line = BoundedLineReader.readLine(reader, 5_000_000)) != null) {
                 count++;
                 Matcher commentMatcher = COMMENT_PATTERN.matcher(line);
                 Matcher propertyPatternMatcher = PROPERTY_PATTERN.matcher(line);
@@ -314,7 +315,7 @@ public abstract class AbstractFormattedChangeLogParser implements ChangeLogParse
                 Matcher altIgnoreLinesOneDashMatcher = ALT_IGNORE_LINES_ONE_CHARACTER_PATTERN.matcher(line);
                 if (ignoreLinesMatcher.matches()) {
                     if ("start".equals(ignoreLinesMatcher.group(1))) {
-                        while ((line = reader.readLine()) != null) {
+                        while ((line = BoundedLineReader.readLine(reader, 5_000_000)) != null) {
                             altIgnoreLinesOneDashMatcher = ALT_IGNORE_LINES_ONE_CHARACTER_PATTERN.matcher(line);
                             count++;
                             ignoreLinesMatcher = IGNORE_LINES_PATTERN.matcher(line);
@@ -332,7 +333,7 @@ public abstract class AbstractFormattedChangeLogParser implements ChangeLogParse
                     } else {
                         try {
                             long ignoreCount = Long.parseLong(ignoreLinesMatcher.group(1));
-                            while (ignoreCount > 0 && reader.readLine() != null) {
+                            while (ignoreCount > 0 && BoundedLineReader.readLine(reader, 5_000_000) != null) {
                                 ignoreCount--;
                                 count++;
                             }
@@ -828,7 +829,7 @@ public abstract class AbstractFormattedChangeLogParser implements ChangeLogParse
 
         String line;
         if (reader != null) {
-            while ((line = reader.readLine()) != null) {
+            while ((line = BoundedLineReader.readLine(reader, 5_000_000)) != null) {
                 if (ROLLBACK_MULTI_LINE_END_PATTERN.matcher(line).matches()) {
                     String[] lastLineSplit = line.split(String.format("%s\\s*$", getEndMultiLineCommentSequence()));
                     if (lastLineSplit.length > 0 && !StringUtil.isWhitespace(lastLineSplit[0])) {
