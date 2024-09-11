@@ -684,7 +684,7 @@ public class Main {
      */
     private static File extract(JarFile jar, JarEntry entry) throws IOException {
         // expand to temp dir and add to list
-        File tempFile = File.createTempFile("liquibase.tmp", null);
+        File tempFile = Files.createTempFile("liquibase.tmp", null).toFile();
         // read from jar and write to the tempJar file
         try (
                 BufferedInputStream inStream = new BufferedInputStream(jar.getInputStream(entry));
