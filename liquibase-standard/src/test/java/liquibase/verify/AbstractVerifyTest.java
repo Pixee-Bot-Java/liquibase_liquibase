@@ -1,5 +1,6 @@
 package liquibase.verify;
 
+import io.github.pixee.security.BoundedLineReader;
 import liquibase.util.StringUtil;
 import org.junit.ComparisonFailure;
 import org.junit.Rule;
@@ -91,7 +92,7 @@ public class AbstractVerifyTest {
                 BufferedReader reader = new BufferedReader(new FileReader(stateFile));
 
                 String line;
-                while ((line = reader.readLine()) != null) {
+                while ((line = BoundedLineReader.readLine(reader, 5_000_000)) != null) {
                     content.append(line).append("\n");
                 }
                 reader.close();
