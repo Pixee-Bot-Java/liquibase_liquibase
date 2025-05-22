@@ -1,5 +1,6 @@
 package liquibase.ui;
 
+import io.github.pixee.security.BoundedLineReader;
 import liquibase.AbstractExtensibleObject;
 import liquibase.GlobalConfiguration;
 import liquibase.Scope;
@@ -235,7 +236,7 @@ public class ConsoleUIService extends AbstractExtensibleObject implements UIServ
                     return "";
                 }
                 try {
-                    return new BufferedReader(new InputStreamReader(System.in)).readLine();
+                    return BoundedLineReader.readLine(new BufferedReader(new InputStreamReader(System.in)), 5_000_000);
                 } catch (IOException ioe) {
                     //
                     // Throw an exception if we can't read

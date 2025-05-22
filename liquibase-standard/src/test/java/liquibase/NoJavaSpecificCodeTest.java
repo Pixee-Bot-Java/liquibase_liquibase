@@ -1,5 +1,6 @@
 package liquibase;
 
+import io.github.pixee.security.BoundedLineReader;
 import org.junit.Test;
 
 import java.io.BufferedReader;
@@ -25,7 +26,7 @@ public class NoJavaSpecificCodeTest {
             if (file.getName().endsWith(".java")) {
                 try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
                     String line;
-                    while ((line = reader.readLine()) != null) {
+                    while ((line = BoundedLineReader.readLine(reader, 5_000_000)) != null) {
                         if (line.contains("java.sql")) {
                             fail(file.getCanonicalPath() + " contains java.sql");
                         }
