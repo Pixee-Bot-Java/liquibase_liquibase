@@ -20,7 +20,7 @@ public class ChangeExecListenerUtilsTest extends Assert {
 
     @Before
     public void setup() throws Exception {
-        tmpFile = File.createTempFile("changeExecListener", ".properties");
+        tmpFile = Files.createTempFile("changeExecListener", ".properties").toFile();
         final OutputStream out = Files.newOutputStream(tmpFile.toPath());
 
         Properties properties = new Properties();

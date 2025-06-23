@@ -783,7 +783,7 @@ public abstract class AbstractIntegrationTest {
         );
         DiffResult diffResult = DiffGeneratorFactory.getInstance().compare(database, null, compareControl);
 
-        File tempFile = File.createTempFile("liquibase-test", ".xml");
+        File tempFile = Files.createTempFile("liquibase-test", ".xml").toFile();
         tempFile.deleteOnExit();
 
         try (FileOutputStream output = new FileOutputStream(tempFile)) {
